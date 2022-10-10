@@ -50,7 +50,7 @@ namespace DB_test
         /// </summary>
         public void AddPerson(string Lastname, string Firstname, string Middlename)
         {
-            var sql = $"insert into People (Lastname, Firstname, Middlename) values ('{Lastname}', '{Firstname}', '{Middlename}')";
+            var sql = $"insert into People (Lastname, Firstname, Middlename) values (N'{Lastname}', N'{Firstname}', N'{Middlename}')";
             ExecCommand(sql);
         }
 
