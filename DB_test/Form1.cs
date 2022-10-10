@@ -13,47 +13,56 @@ namespace DB_test
     public partial class Form1 : Form
     {
 
+        string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=\"D:\\Study\\7_semester\\Введение в разработку ПО\\lab1\\DB_test\\DB_test\\DB_test\\DbLab1.mdf\";Integrated Security=True";
+
         public Form1()
         {
             InitializeComponent();
-            var connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=\"D:\\Study\\7_semester\\Введение в разработку ПО\\lab1\\DB_test\\DB_test\\DB_test\\DbLab1.mdf\";Integrated Security=True";
-            SqlConnection cnn = new SqlConnection(connectionString);
-            cnn.Open();
-            SqlDataAdapter da = new SqlDataAdapter("select * from People", cnn);
-            DataSet ds = new DataSet();
-            da.Fill(ds);
-            cnn.Close();
-            gridClients.DataSource = ds.Tables[0];
+            Reload();
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            SqlConnection cnn = new SqlConnection("Data Source = People.sdf");
-            cnn.Open();
-            SqlCommand cmd = new SqlCommand(
-                "insert into People (Lastname, Firstname, Middlename) values ('Сидоров', 'Петр', 'Сидорович')", cnn);
-            cmd.ExecuteNonQuery();
-            SqlDataAdapter da = new SqlDataAdapter("select * from People", cnn);
-            DataSet ds = new DataSet();
-            da.Fill(ds);
-            cnn.Close();
-            gridClients.DataSource = ds.Tables[0];
+            var sql = "insert into People (Lastname, Firstname, Middlename) values ('Сидоров', 'Петр', 'Сидорович')";
+            ExecCommand(sql);
+            Reload();
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            SqlConnection cnn = new SqlConnection("Data Source = People.sdf");
-            cnn.Open();
-            string id = gridClients.CurrentRow.Cells[0].Value.ToString();
-            SqlCommand cmd = new SqlCommand(
-                "delete from People where id = " + id, cnn);
-            cmd.ExecuteNonQuery();
-            SqlDataAdapter da = new SqlDataAdapter("select * from People", cnn);
-            DataSet ds = new DataSet();
-            da.Fill(ds);
-            cnn.Close();
-            gridClients.DataSource = ds.Tables[0];
+            var id = gridClients.CurrentRow.Cells[0].Value.ToString();
+            var sql = $"delete from People where id = {id}";
+            ExecCommand(sql);
+            Reload();
         }
 
+        // Устанавливает подключение к БД
+        private SqlConnection Connect()
+        {
+            var cnn = new SqlConnection(connectionString);
+            cnn.Open();
+            return cnn;
+        }
+
+        // Загрузить данные и отобразить их в таблице
+        private void Reload()
+        {
+            var cnn = Connect();
+            var da = new SqlDataAdapter("select * from People", cnn);
+            var ds = new DataSet();
+            da.Fill(ds);
+            gridClients.DataSource = ds.Tables[0];
+            cnn.Close();
+        }
+
+        // Выполняет SQL запроч
+        private void ExecCommand(string sql)
+        {
+            var cnn = Connect();
+            var cmd = new SqlCommand(sql, cnn);
+            cmd.ExecuteNonQuery();
+            cnn.Close();
+
+        }
     }
 }
