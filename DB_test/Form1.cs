@@ -23,10 +23,10 @@ namespace DB_test
             DataSet ds = new DataSet();
             da.Fill(ds);
             cnn.Close();
-            dataGridView1.DataSource = ds.Tables[0];
+            gridClients.DataSource = ds.Tables[0];
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void btnAdd_Click(object sender, EventArgs e)
         {
             SqlConnection cnn = new SqlConnection("Data Source = People.sdf");
             cnn.Open();
@@ -37,14 +37,14 @@ namespace DB_test
             DataSet ds = new DataSet();
             da.Fill(ds);
             cnn.Close();
-            dataGridView1.DataSource = ds.Tables[0];
+            gridClients.DataSource = ds.Tables[0];
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void btnDelete_Click(object sender, EventArgs e)
         {
             SqlConnection cnn = new SqlConnection("Data Source = People.sdf");
             cnn.Open();
-            string id = dataGridView1.CurrentRow.Cells[0].Value.ToString();
+            string id = gridClients.CurrentRow.Cells[0].Value.ToString();
             SqlCommand cmd = new SqlCommand(
                 "delete from People where id = " + id, cnn);
             cmd.ExecuteNonQuery();
@@ -52,7 +52,7 @@ namespace DB_test
             DataSet ds = new DataSet();
             da.Fill(ds);
             cnn.Close();
-            dataGridView1.DataSource = ds.Tables[0];
+            gridClients.DataSource = ds.Tables[0];
         }
 
     }
