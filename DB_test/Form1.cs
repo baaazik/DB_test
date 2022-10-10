@@ -55,5 +55,5 @@ namespace DB_test
             dataGridView1.DataSource = ds.Tables[0];
         }
 
-     }
+    }
 }
