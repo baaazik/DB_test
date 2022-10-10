@@ -12,57 +12,46 @@ namespace DB_test
 {
     public partial class Form1 : Form
     {
-
-        string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=\"D:\\Study\\7_semester\\Введение в разработку ПО\\lab1\\DB_test\\DB_test\\DB_test\\DbLab1.mdf\";Integrated Security=True";
+        private List<Person> people;
 
         public Form1()
         {
             InitializeComponent();
-            Reload();
+
+            people = new List<Person>();
+
+            using (var db = new Db())
+            {
+                Reload(db);
+            }
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            var sql = "insert into People (Lastname, Firstname, Middlename) values ('Сидоров', 'Петр', 'Сидорович')";
-            ExecCommand(sql);
-            Reload();
+            using (var db = new Db())
+            {
+                db.AddPerson("Сидоров", "Петр", "Сидорович");
+                Reload(db);
+            }
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            var id = gridClients.CurrentRow.Cells[0].Value.ToString();
-            var sql = $"delete from People where id = {id}";
-            ExecCommand(sql);
-            Reload();
-        }
-
-        // Устанавливает подключение к БД
-        private SqlConnection Connect()
-        {
-            var cnn = new SqlConnection(connectionString);
-            cnn.Open();
-            return cnn;
+            int idx = gridClients.CurrentCell.RowIndex;
+            int id = people[idx].Id;
+            
+            using (var db = new Db())
+            {
+                db.DeletePerson(id);
+                Reload(db);
+            }
         }
 
         // Загрузить данные и отобразить их в таблице
-        private void Reload()
+        private void Reload(Db db)
         {
-            var cnn = Connect();
-            var da = new SqlDataAdapter("select * from People", cnn);
-            var ds = new DataSet();
-            da.Fill(ds);
-            gridClients.DataSource = ds.Tables[0];
-            cnn.Close();
-        }
-
-        // Выполняет SQL запроч
-        private void ExecCommand(string sql)
-        {
-            var cnn = Connect();
-            var cmd = new SqlCommand(sql, cnn);
-            cmd.ExecuteNonQuery();
-            cnn.Close();
-
+            people = db.GetPeople();
+            gridClients.DataSource = people;
         }
     }
 }
