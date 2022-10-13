@@ -13,7 +13,7 @@ namespace DB_test
     {
         public Person() {}
 
-        public Person(int id, string lastname, string firstname, string middlename)
+        public Person(string lastname, string firstname, string middlename, int id=0)
         {
             Id = id;
             Lastname = lastname;

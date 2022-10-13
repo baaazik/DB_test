@@ -33,12 +33,12 @@ namespace DB_test
             var tablePeople = ds.Tables[0];
 
             var people = new List<Person>();
-            
-            foreach(DataRow row in tablePeople.Rows)
+
+            foreach (DataRow row in tablePeople.Rows)
             {
                 var newPerson = new Person(
-                    (int)row["Id"], (string)row["Lastname"],
-                    (string)row["Firstname"], (string)row["Middlename"]);
+                    (string)row["Lastname"], (string)row["Firstname"],
+                    (string)row["Middlename"], (int)row["Id"]);
                 people.Add(newPerson);
             }
 
@@ -48,9 +48,9 @@ namespace DB_test
         /// <summary>
         /// Добавляет новую запись о человеке в базу
         /// </summary>
-        public void AddPerson(string Lastname, string Firstname, string Middlename)
+        public void AddPerson(Person person)
         {
-            var sql = $"insert into People (Lastname, Firstname, Middlename) values (N'{Lastname}', N'{Firstname}', N'{Middlename}')";
+            var sql = $"insert into People (Lastname, Firstname, Middlename) values (N'{person.Lastname}', N'{person.Firstname}', N'{person.Middlename}')";
             ExecCommand(sql);
         }
 
@@ -66,7 +66,8 @@ namespace DB_test
 
         // Выполняет SQL запроч
         private void ExecCommand(string sql)
-        {;
+        {
+            ;
             var cmd = new SqlCommand(sql, cnn);
             cmd.ExecuteNonQuery();
 

@@ -30,7 +30,7 @@ namespace DB_test
         {
             using (var db = new Db())
             {
-                db.AddPerson("Сидоров", "Петр", "Сидорович");
+                db.AddPerson(new Person("Сидоров", "Петр", "Сидорович"));
                 Reload(db);
             }
         }
